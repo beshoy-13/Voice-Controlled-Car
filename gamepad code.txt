@@ -1,0 +1,71 @@
+char data; // Variable to store received data
+
+void setup() {
+  Serial.begin(9600); // Start serial communication at 9600 baud rate
+
+  // Set motor control pins as output
+  pinMode(2, OUTPUT);  // IN1 for motor A
+  pinMode(4, OUTPUT);  // IN2 for motor A
+  pinMode(7, OUTPUT);  // IN3 for motor B
+  pinMode(8, OUTPUT);  // IN4 for motor B
+  pinMode(3, OUTPUT);  // ENA (PWM for motor A)
+  pinMode(5, OUTPUT);  // ENB (PWM for motor B)
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    data = Serial.read(); // Read received data
+
+    // Control motor movement based on received data
+    switch (data) {
+      case 'F': // Move Forward
+        digitalWrite(2, HIGH); // Motor A forward
+        digitalWrite(4, LOW);
+        digitalWrite(7, HIGH); // Motor B forward
+        digitalWrite(8, LOW);
+        analogWrite(3, 200);  // Set speed for motor A
+        analogWrite(5, 200);  // Set speed for motor B
+        break;
+
+      case 'B': // Move Backward
+        digitalWrite(2, LOW); // Motor A backward
+        digitalWrite(4, HIGH);
+        digitalWrite(7, LOW); // Motor B backward
+        digitalWrite(8, HIGH);
+        analogWrite(3, 200);  // Set speed for motor A
+        analogWrite(5, 200);  // Set speed for motor B
+        break;
+
+      case 'R': // Turn Right
+        digitalWrite(2, HIGH); // Motor A forward
+        digitalWrite(4, LOW);
+        digitalWrite(7, LOW); // Motor B backward
+        digitalWrite(8, HIGH);
+        analogWrite(3, 200);  // Set speed for motor A
+        analogWrite(5, 200);  // Set speed for motor B
+        break;
+
+      case 'L': // Turn Left
+        digitalWrite(2, LOW); // Motor A backward
+        digitalWrite(4, HIGH);
+        digitalWrite(7, HIGH); // Motor B forward
+        digitalWrite(8, LOW);
+        analogWrite(3, 200);  // Set speed for motor A
+        analogWrite(5, 200);  // Set speed for motor B
+        break;
+
+      case 'S': // Stop
+        digitalWrite(2, LOW);
+        digitalWrite(4, LOW);
+        digitalWrite(7, LOW);
+        digitalWrite(8, LOW);
+        analogWrite(3, 0);  // Stop motor A
+        analogWrite(5, 0);  // Stop motor B
+        break;
+
+      default:
+        // Do nothing for invalid commands
+        break;
+    }
+  }
+}
